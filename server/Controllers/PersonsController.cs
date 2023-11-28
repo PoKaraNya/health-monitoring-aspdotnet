@@ -42,12 +42,9 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
     public async Task<IActionResult> GetPersonById([FromRoute]int id)
     {
         //var person = _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == id);
-        //if (person == null)
-        //{
-        //    return NotFound();
-        //}
-        //return Ok(person);
-        var existingObject = await _unitOfWork.Person.GetByIdAsync(id);
+
+        //var existingObject = await _unitOfWork.Person.GetByIdAsync(id);        
+        var existingObject = await _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == id);
         if (existingObject is null)
         {
             return NotFound();
@@ -100,20 +97,48 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
         //return "sdgjkl";
     }
 
-    [HttpPut("{id}")]
-    public string UpdatePerson(int? id)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdatePerson([FromRoute]int id, UpdatePersonRequestDto request)
     {
+        var person = new Person
+        {
+            PersonId = id,
+            StudentID = request.StudentID,
+            Name = request.Name,
+            StudyGroup = request.StudyGroup,
+            Role = request.Role,
+            Email = request.Email,
+        };
+
+        //var existingObject = 
+        person = await _unitOfWork.Person.UpdateAsync(person, x => x.PersonId == id);
+
+        if (person is null)
+        {
+            return NotFound();
+        }
+
+
+        var response = new PersonDto
+        {
+            PersonId = person.PersonId,
+            StudentID = person.StudentID,
+            Name = person.Name,
+            StudyGroup = person.StudyGroup,
+            Role = person.Role,
+            Email = person.Email,
+        };
+
         //if (!ModelState.IsValid) return NotFound();
 
         ////if id = 0, asp by default add a new record
         //_unitOfWork.Person.Update(obj);
         //_unitOfWork.Save();
 
-        //return Ok(obj);
-        return "sdgjkl";
+        return Ok(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public string DeletePerson(int id)
     {
         return "DeletePerson pe rson";

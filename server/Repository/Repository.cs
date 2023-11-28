@@ -28,14 +28,33 @@ public class Repository<T> : IRepository<T> where T : class
         return await query.ToListAsync();
     }
 
-    //public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
+    //public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
     //{
-    //    IQueryable<T> query = dbSet;
-    //    query = query.Where(filter);
-    //    return await query.FirstOrDefaultAsync();
+    //    throw new NotImplementedException();
     //}
 
+    public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
+    {
+        IQueryable<T> query = dbSet;
+        query = query.Where(filter);
+        return await query.FirstOrDefaultAsync();
+    }
 
+    public async Task<T?> UpdateAsync(T entity, Expression<Func<T, bool>> filter)
+    {
+        //IQueryable<T> query = dbSet;
+        //query = query.Where(filter);
+        //var existing = await dbSet.FirstOrDefaultAsync(filter);
+        var existing = await dbSet.SingleOrDefaultAsync(filter);
+        if (existing != null)
+         {
+
+            dbSet.Entry(existing).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+            return existing;
+         }
+        return null;
+    }
 
     public void Remove(T entity)
     {
@@ -46,4 +65,6 @@ public class Repository<T> : IRepository<T> where T : class
     {
         dbSet.RemoveRange(entities);
     }
+
+   
 }
