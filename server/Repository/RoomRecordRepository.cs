@@ -11,8 +11,17 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
         _db = db;
     }
 
-    public void Update(RoomRecord obj)
+    //public void Update(RoomRecord obj)
+    //{
+    //    _db.RoomRecords.Update(obj);
+    //}
+
+    //Task<RoomRecord> IRoomRecordRepository.Update(RoomRecord obj)
+    //{
+    //    throw new NotImplementedException();
+    //}
+    void IRoomRecordRepository.Update(RoomRecord obj)
     {
-        _db.RoomRecords.Update(obj);
+        throw new NotImplementedException();
     }
 }

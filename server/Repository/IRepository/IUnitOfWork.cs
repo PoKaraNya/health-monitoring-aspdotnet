@@ -6,4 +6,5 @@ public interface IUnitOfWork
     IRoomRepository Room { get; }
     IRoomRecordRepository RoomRecord { get; }
     void Save();
+    Task SaveAsync();
 }

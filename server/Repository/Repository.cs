@@ -13,26 +13,29 @@ public class Repository<T> : IRepository<T> where T : class
     {
         _db = db;
         this.dbSet = _db.Set<T>();
-
     }
 
-    public void Add(T entity)
+    public async Task<T> Add(T entity)
     {
-        dbSet.Add(entity);
+        await dbSet.AddAsync(entity);
+        return entity;
     }
 
-    public IEnumerable<T> GetAll()
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
+       // await dbSet.ToListAsync();
         IQueryable<T> query = dbSet;
-        return query.ToList();
+        return await query.ToListAsync();
     }
 
-    public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
-    {
-        IQueryable<T> query = dbSet;
-        query = query.Where(filter);
-        return query.FirstOrDefault();
-    }
+    //public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
+    //{
+    //    IQueryable<T> query = dbSet;
+    //    query = query.Where(filter);
+    //    return await query.FirstOrDefaultAsync();
+    //}
+
+
 
     public void Remove(T entity)
     {

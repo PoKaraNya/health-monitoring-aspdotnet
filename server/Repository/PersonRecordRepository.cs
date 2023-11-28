@@ -1,4 +1,5 @@
-﻿using server.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using server.Models;
 using server.Repository.IRepository;
 using System.Linq.Expressions;
 
@@ -14,6 +15,10 @@ public class PersonRecordRepository : Repository<PersonRecord>, IPersonRecordRep
 
     public void Update(PersonRecord obj)
     {
-        _db.PersonRecords.Update(obj);
+       //await _db.PersonRecords.UpdateAsync(obj);
+       // await _db.SaveChangesAsync(obj);
+        //return obj;
     }
+
+   
 }
