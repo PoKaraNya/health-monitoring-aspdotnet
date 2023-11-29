@@ -1,9 +1,12 @@
 ﻿using server.Models.Validations;
 using System.ComponentModel.DataAnnotations;
 
-namespace server.Models.DTO;
-public class CreatePersonRequestDto
+namespace server.Models.DTO.Person;
+
+public class PersonDto
 {
+    public int PersonId { get; set; }
+
     public int? StudentID { get; set; }
 
     [Required]

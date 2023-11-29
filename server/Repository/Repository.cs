@@ -23,15 +23,10 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-       // await dbSet.ToListAsync();
-        IQueryable<T> query = dbSet;
-        return await query.ToListAsync();
+        //IQueryable<T> query = dbSet;
+        //return await query.ToListAsync();
+        return await dbSet.ToListAsync();
     }
-
-    //public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
-    //{
-    //    throw new NotImplementedException();
-    //}
 
     public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
     {
@@ -44,27 +39,29 @@ public class Repository<T> : IRepository<T> where T : class
     {
         //IQueryable<T> query = dbSet;
         //query = query.Where(filter);
-        //var existing = await dbSet.FirstOrDefaultAsync(filter);
         var existing = await dbSet.SingleOrDefaultAsync(filter);
         if (existing != null)
-         {
-
+        {
             dbSet.Entry(existing).CurrentValues.SetValues(entity);
             await _db.SaveChangesAsync();
             return existing;
-         }
+        }
         return null;
     }
+    //public void RemoveRange(IEnumerable<T> entities)
+    //{
+    //    dbSet.RemoveRange(entities);
+    //}
 
-    public void Remove(T entity)
+    public async Task<T?> DeleteAsync(Expression<Func<T, bool>> filter)
     {
-        dbSet.Remove(entity);
+        var existing = await dbSet.FirstOrDefaultAsync(filter);
+        if (existing != null)
+        {
+            dbSet.Remove(existing);
+            await _db.SaveChangesAsync();
+            return existing;
+        }
+        return null;
     }
-
-    public void RemoveRange(IEnumerable<T> entities)
-    {
-        dbSet.RemoveRange(entities);
-    }
-
-   
 }

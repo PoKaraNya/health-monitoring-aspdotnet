@@ -17,8 +17,8 @@ public class PersonRepository : Repository<Person>, IPersonRepository
     {
         _db.Persons.Update(obj);
     }
-    public async Task<Person?> GetByIdAsync(int id)
-    {
-        return await _db.Persons.FirstOrDefaultAsync(x => x.PersonId == id);
-    }
+    //public async Task<Person?> GetByIdAsync(int id)
+    //{
+    //    return await _db.Persons.FirstOrDefaultAsync(x => x.PersonId == id);
+    //}
 }

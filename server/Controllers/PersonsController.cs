@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using server.Models;
-using server.Models.DTO;
+using server.Models.DTO.Person;
 using server.Repository.IRepository;
-using System;
-using static server.Models.Validations.Person_RoleAttribute;
-using System.Xml.Linq;
 
 namespace server.Controllers;
 
@@ -42,7 +39,6 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
     public async Task<IActionResult> GetPersonById([FromRoute]int id)
     {
         //var person = _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == id);
-
         //var existingObject = await _unitOfWork.Person.GetByIdAsync(id);        
         var existingObject = await _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == id);
         if (existingObject is null)
@@ -76,7 +72,7 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
         };
         await _unitOfWork.Person.Add(person);
         await _unitOfWork.SaveAsync();
-
+ 
         var response = new PersonDto
         {
             PersonId = person.PersonId,
@@ -88,13 +84,6 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
         };
 
         return Ok(response);
-
-        //if (!ModelState.IsValid) return NotFound();//
-
-        //_unitOfWork.Person.Add(person);
-        //_unitOfWork.Save();
-        //return Ok(person);
-        //return "sdgjkl";
     }
 
     [HttpPut("{id:int}")]
@@ -110,14 +99,12 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
             Email = request.Email,
         };
 
-        //var existingObject = 
         person = await _unitOfWork.Person.UpdateAsync(person, x => x.PersonId == id);
 
         if (person is null)
         {
             return NotFound();
         }
-
 
         var response = new PersonDto
         {
@@ -129,19 +116,29 @@ public class PersonsController(IUnitOfWork unitOfWork) : ControllerBase
             Email = person.Email,
         };
 
-        //if (!ModelState.IsValid) return NotFound();
-
-        ////if id = 0, asp by default add a new record
-        //_unitOfWork.Person.Update(obj);
-        //_unitOfWork.Save();
-
         return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
-    public string DeletePerson(int id)
+    public async Task<IActionResult> DeletePerson([FromRoute] int id)
     {
-        return "DeletePerson pe rson";
+        var person = await _unitOfWork.Person.DeleteAsync(x => x.PersonId == id);
+        if(person is null)
+        { 
+            return NotFound(); 
+        }
+
+        var response = new PersonDto
+        {
+            PersonId = person.PersonId,
+            StudentID = person.StudentID,
+            Name = person.Name,
+            StudyGroup = person.StudyGroup,
+            Role = person.Role,
+            Email = person.Email,
+        };
+
+        return Ok(response);
     }
 
 }

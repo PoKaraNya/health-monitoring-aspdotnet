@@ -26,7 +26,7 @@ public class PersonRecord
     public double Temperature { get; set; }
 
     [Display(Name = "Is critical results")]
-    public double IsCriticalResults { get; set; }
+    public bool IsCriticalResults { get; set; }
 
     [Display(Name = "Recorded date")]
     public DateTime RecordedDate { get; set; }
