@@ -8,11 +8,12 @@ public class RoomRecord
     [Key]
     [Display(Name = "Room record ID")]
     public int RoomRecordId { get; set; }
-   
+
     //[Key]
     [ForeignKey("Room")]
     [Display(Name = "Room ID")]
     public int RoomId { get; set; }
+    public virtual Room Room { get; set; }
 
     [Required]
     public double Humidity { get; set; }

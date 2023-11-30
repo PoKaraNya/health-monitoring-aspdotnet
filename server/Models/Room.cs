@@ -7,7 +7,7 @@ public class Room
     [Key]
     [Display(Name = "Room ID")]
     public int RoomId { get; set; }
-
+  
     [Required]
     [Display(Name = "Room number")]
     public string RoomNumber { get; set; }
@@ -15,4 +15,6 @@ public class Room
     [Required]
     [Display(Name = "Room type")]
     public string RoomType { get; set; }
+
+    public virtual ICollection<RoomRecord> RoomRecords { get; set; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using server;
@@ -11,9 +12,11 @@ using server;
 namespace server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class HMDataContexModelSnapshot : ModelSnapshot
+    [Migration("20231130202452_UpdateRoomRecordAndRoomTables")]
+    partial class UpdateRoomRecordAndRoomTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +53,7 @@ namespace server.Migrations
 
                     b.HasKey("PersonId");
 
-                    b.ToTable("Persons", (string)null);
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("server.Models.PersonRecord", b =>
@@ -84,7 +87,7 @@ namespace server.Migrations
 
                     b.HasKey("PersonRecordId");
 
-                    b.ToTable("PersonRecords", (string)null);
+                    b.ToTable("PersonRecords");
                 });
 
             modelBuilder.Entity("server.Models.Room", b =>
@@ -105,7 +108,7 @@ namespace server.Migrations
 
                     b.HasKey("RoomId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("server.Models.RoomRecord", b =>
@@ -147,7 +150,7 @@ namespace server.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomRecords", (string)null);
+                    b.ToTable("RoomRecords");
                 });
 
             modelBuilder.Entity("server.Models.RoomRecord", b =>

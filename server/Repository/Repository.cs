@@ -28,6 +28,7 @@ public class Repository<T> : IRepository<T> where T : class
         return await dbSet.ToListAsync();
     }
 
+
     public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
     {
         IQueryable<T> query = dbSet;
