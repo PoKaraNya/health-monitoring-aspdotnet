@@ -26,4 +26,5 @@ public class Person
     [Required]
     public string Email { get; set; }
 
+    public virtual ICollection<PersonRecord> PersonRecord { get; set; }
 }

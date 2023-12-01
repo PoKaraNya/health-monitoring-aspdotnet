@@ -4,7 +4,6 @@ using server.Models.DTO.RoomRecord;
 using server.Models;
 using AutoMapper;
 
-
 namespace server.Controllers;
 
 [ApiController]
@@ -22,7 +21,31 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         {
             return NotFound();
         }
-        var response = _mapper.Map<List<RoomRecordDto>>(roomRecords);
+
+        var response = new List<RoomRecordDto>();
+
+        foreach (var roomRecord in roomRecords)
+        {
+            response.Add(new RoomRecordDto
+            {
+                RoomRecordId = roomRecord.RoomRecordId,
+
+                RoomId = roomRecord.RoomId,
+                RoomNumber = roomRecord.Room.RoomNumber,
+                RoomType = roomRecord.Room.RoomType,
+
+                Humidity = roomRecord.Humidity,
+                Temperature = roomRecord.Temperature,
+                Pressure = roomRecord.Pressure,
+                CarbonDioxide = roomRecord.CarbonDioxide,
+                AirIons = roomRecord.AirIons,
+                Ozone = roomRecord.Ozone,
+                IsCriticalResults = roomRecord.IsCriticalResults,
+                RecordedDate = roomRecord.RecordedDate,
+            });
+        }
+
+        //var response = _mapper.Map<List<RoomRecordDto>>(roomRecords);
         return Ok(response);
     }
 
@@ -55,10 +78,14 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         var response = new RoomRecordDto
         {
             RoomRecordId = roomRecord.RoomRecordId,
-           
+
             RoomId = existingObject.RoomId,
             RoomNumber = existingObject.RoomNumber,
             RoomType = existingObject.RoomType,
+
+            //RoomId = roomRecord.Room.RoomId,
+            //RoomNumber = roomRecord.Room.RoomNumber,
+            //RoomType = roomRecord.Room.RoomType,
 
             Humidity = roomRecord.Humidity,
             Temperature = roomRecord.Temperature,
