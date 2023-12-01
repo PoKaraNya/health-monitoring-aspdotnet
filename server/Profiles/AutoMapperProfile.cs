@@ -14,6 +14,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Person, PersonDto>();
 
         CreateMap<RoomRecord, RoomRecordDto>();
-
+        CreateMap<CreateRoomRecordRequestDto, RoomRecord>();
+        //CreateMap<UpdateRoomRecordRequestDto, RoomRecord>();
     }
 }

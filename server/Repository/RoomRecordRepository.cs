@@ -2,7 +2,6 @@
 using server.Models;
 using server.Repository.IRepository;
 using server.Utils;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace server.Repository;
@@ -17,8 +16,14 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
 
     public Expression<Func<RoomRecord, bool>> GetIsCriticalExpression(bool isOutputOnlyCritical)
     {
-        Expression<Func<RoomRecord, bool>> expression = rr => rr.IsCriticalResults == isOutputOnlyCritical;
-        return expression;
+        if (isOutputOnlyCritical)
+        {
+            return rr => rr.IsCriticalResults == true;
+        }
+        else
+        {
+            return rr => true; // take all fields
+        }
     }
 
     public async Task<IEnumerable<RoomRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical)
@@ -29,22 +34,12 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
 
         return await _db.RoomRecords
                .Include(nameof(Room))
+               .Where(where)
                .Skip(skip)
                .Take(take)
-               .Where(where)
                .ToListAsync();
     }
    
-
-    //public void Update(RoomRecord obj)
-    //{
-    //    _db.RoomRecords.Update(obj);
-    //}
-
-    //Task<RoomRecord> IRoomRecordRepository.Update(RoomRecord obj)
-    //{
-    //    throw new NotImplementedException();
-    //}
     void IRoomRecordRepository.Update(RoomRecord obj)
     {
         throw new NotImplementedException();
