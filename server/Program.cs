@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using server;
 using server.Repository.IRepository;
 using server.Repository;
+using server.Profiles;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("HealthMonitoringDB")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
