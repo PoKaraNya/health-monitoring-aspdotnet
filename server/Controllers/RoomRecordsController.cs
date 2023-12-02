@@ -17,13 +17,12 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
     public async Task<ActionResult<IEnumerable<RoomRecord>>> GetAllRoomRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
     {   
         var roomRecords = await _unitOfWork.RoomRecord.GetAllWithRelationsAsync(pageNumber, isOutputOnlyCritical);
+        
         if (roomRecords is null)
         {
             return NotFound();
         }
-
         var response = new List<RoomRecordDto>();
-
         foreach (var roomRecord in roomRecords)
         {
             response.Add(new RoomRecordDto
@@ -44,8 +43,75 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
                 RecordedDate = roomRecord.RecordedDate,
             });
         }
-
         //var response = _mapper.Map<List<RoomRecordDto>>(roomRecords);
+        return Ok(response);
+    }
+
+
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<IEnumerable<RoomRecord>>> GetRoomRecordByRoomId([FromRoute] int? id, [FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
+    {
+        var roomRecords = await _unitOfWork.RoomRecord.GetAllWithRelationsAsync(pageNumber, isOutputOnlyCritical, id);
+      
+        if (roomRecords is null)
+        {
+            return NotFound();
+        }
+        var response = new List<RoomRecordDto>();
+        foreach (var roomRecord in roomRecords)
+        {
+            response.Add(new RoomRecordDto
+            {
+                RoomRecordId = roomRecord.RoomRecordId,
+
+                RoomId = roomRecord.RoomId,
+                RoomNumber = roomRecord.Room.RoomNumber,
+                RoomType = roomRecord.Room.RoomType,
+
+                Humidity = roomRecord.Humidity,
+                Temperature = roomRecord.Temperature,
+                Pressure = roomRecord.Pressure,
+                CarbonDioxide = roomRecord.CarbonDioxide,
+                AirIons = roomRecord.AirIons,
+                Ozone = roomRecord.Ozone,
+                IsCriticalResults = roomRecord.IsCriticalResults,
+                RecordedDate = roomRecord.RecordedDate,
+            });
+        }
+        return Ok(response);
+    }
+
+    [HttpGet("Dashboard")]
+    public async Task<ActionResult<IEnumerable<RoomRecord>>> GetAllRoomRecordDashboard([FromQuery] int? day, int? month, int year, int? id)
+    {
+        var roomRecords = await _unitOfWork.RoomRecord.GetAllRoomRecordDashboard(day, month, year, id);
+       
+        if (roomRecords is null)
+        {
+            return NotFound();
+        }
+        var response = new List<RoomRecordDto>();
+        foreach (var roomRecord in roomRecords)
+        {
+            response.Add(new RoomRecordDto
+            {
+                RoomRecordId = roomRecord.RoomRecordId,
+
+                RoomId = roomRecord.RoomId,
+                RoomNumber = roomRecord.Room.RoomNumber,
+                RoomType = roomRecord.Room.RoomType,
+
+                Humidity = roomRecord.Humidity,
+                Temperature = roomRecord.Temperature,
+                Pressure = roomRecord.Pressure,
+                CarbonDioxide = roomRecord.CarbonDioxide,
+                AirIons = roomRecord.AirIons,
+                Ozone = roomRecord.Ozone,
+                IsCriticalResults = roomRecord.IsCriticalResults,
+                RecordedDate = roomRecord.RecordedDate,
+            });
+        }
         return Ok(response);
     }
 

@@ -9,4 +9,5 @@ public interface IPersonRecordRepository : IRepository<PersonRecord>
 
     Expression<Func<PersonRecord, bool>> GetExpression(int? id, bool isOutputOnlyCritical);
     Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical, int? id = null);
+    Task<IEnumerable<PersonRecord>> GetAllPersonRecordDashboard(int? day, int? month, int year, int? id);
 }

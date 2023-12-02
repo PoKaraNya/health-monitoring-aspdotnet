@@ -44,10 +44,31 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
                .ToListAsync();
     }
 
-    public void Update(PersonRecord obj)
+    public async Task<IEnumerable<PersonRecord>> GetAllPersonRecordDashboard(int? day, int? month, int year, int? id)
+    {
+        var personRecords = _db.PersonRecords.Include(nameof(Room)).Include(nameof(Person)).AsQueryable();
+
+        Expression<Func<PersonRecord, bool>> dateCondition = record =>
+           (!day.HasValue || record.RecordedDate.Day == day.Value) &&
+           (!month.HasValue || record.RecordedDate.Month == month.Value) &&
+           record.RecordedDate.Year == year;
+
+        personRecords = personRecords.Where(dateCondition);
+
+        if (id.HasValue)
+        {
+            personRecords = personRecords.Where(record => record.PersonId == id.Value);
+        }
+
+        return await personRecords.ToListAsync();
+    }
+
+
+public void Update(PersonRecord obj)
     {
        //await _db.PersonRecords.UpdateAsync(obj);
        // await _db.SaveChangesAsync(obj);
         //return obj;
     }
+
 }

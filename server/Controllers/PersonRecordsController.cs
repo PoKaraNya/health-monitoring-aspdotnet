@@ -4,6 +4,7 @@ using server.Models;
 using server.Repository.IRepository;
 using server.Models.DTO.PersonRecord;
 using server.Models.DTO.Room;
+using server.Models.DTO.RoomRecord;
 
 namespace server.Controllers;
 
@@ -89,6 +90,43 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         }
 
         //var response = _mapper.Map<List<PersonRecordDto>>(personRecords);
+        return Ok(response);
+    }
+
+    [HttpGet("Dashboard")]
+    public async Task<ActionResult<IEnumerable<PersonRecord>>> GetAllPersonRecordDashboard([FromQuery] int? day, int? month, int year, int? id)
+    {
+        var personRecords = await _unitOfWork.PersonRecord.GetAllPersonRecordDashboard(day, month, year, id);
+
+        if (personRecords is null)
+        {
+            return NotFound();
+        }
+        var response = new List<PersonRecordDto>();
+        foreach (var personRecord in personRecords)
+        {
+            response.Add(new PersonRecordDto
+            {
+                PersonRecordId = personRecord.PersonRecordId,
+
+                RoomId = personRecord.Room.RoomId,
+                RoomNumber = personRecord.Room.RoomNumber,
+                RoomType = personRecord.Room.RoomType,
+
+                PersonId = personRecord.Person.PersonId,
+                StudentID = personRecord.Person.StudentID,
+                Name = personRecord.Person.Name,
+                StudyGroup = personRecord.Person.StudyGroup,
+                Role = personRecord.Person.Role,
+                Email = personRecord.Person.Email,
+
+                Saturation = personRecord.Saturation,
+                HeartRate = personRecord.HeartRate,
+                Temperature = personRecord.Temperature,
+                IsCriticalResults = personRecord.IsCriticalResults,
+                RecordedDate = personRecord.RecordedDate,
+            });
+        }
         return Ok(response);
     }
 
