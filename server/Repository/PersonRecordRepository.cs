@@ -10,24 +10,31 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
 {
     public ApplicationDbContext _db = db;
 
-    public Expression<Func<PersonRecord, bool>> GetIsCriticalExpression(bool isOutputOnlyCritical)
+    public Expression<Func<PersonRecord, bool>> GetExpression(int? id, bool isOutputOnlyCritical)
     {
+        if (isOutputOnlyCritical && id.HasValue)
+        {
+            return rr => rr.IsCriticalResults == true && rr.PersonId == id;
+        }
+
         if (isOutputOnlyCritical)
         {
             return rr => rr.IsCriticalResults == true;
         }
-        else
+
+        if (id.HasValue)
         {
-            return rr => true; // take all fields
+            return rr => rr.PersonId == id;
         }
+        
+        return rr => true; // take all fields
     }
 
-    public async Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical)
+    public async Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical, int? id = null)
     {
         var take = Constants.MaxItemsPerPage;
         var skip = (pageNumber - 1) * take;
-        var where = GetIsCriticalExpression(isOutputOnlyCritical);
-        //return await _db.PersonRecords.ToListAsync(); ;
+        var where = GetExpression(id, isOutputOnlyCritical);
         return await _db.PersonRecords
                .Include(nameof(Person))
                .Include(nameof(Room))

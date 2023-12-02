@@ -7,6 +7,6 @@ public interface IPersonRecordRepository : IRepository<PersonRecord>
 {
     void Update(PersonRecord obj);
 
-    Expression<Func<PersonRecord, bool>> GetIsCriticalExpression(bool isOutputOnlyCritical);
-    Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical);
+    Expression<Func<PersonRecord, bool>> GetExpression(int? id, bool isOutputOnlyCritical);
+    Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical, int? id = null);
 }
