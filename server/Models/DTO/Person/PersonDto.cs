@@ -1,4 +1,6 @@
-﻿using server.Models.Validations;
+﻿using server.Models.DTO.PersonRecord;
+using server.Models.DTO.RoomRecord;
+using server.Models.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace server.Models.DTO.Person;
@@ -8,16 +10,11 @@ public class PersonDto
     public int PersonId { get; set; }
 
     public int? StudentID { get; set; }
-
-    [Required]
     public string Name { get; set; }
-
     public string? StudyGroup { get; set; }
-
-    [Required]
     [EnumDataType(typeof(Person_RoleAttribute.Role))]
     public string Role { get; set; }
-
-    [Required]
     public string Email { get; set; }
+
+    public ICollection<PersonRecordDto> PersonRecords { get; set; }
 }

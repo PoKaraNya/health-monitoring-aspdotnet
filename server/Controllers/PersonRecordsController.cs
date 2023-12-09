@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using server.Models;
 using server.Repository.IRepository;
 using server.Models.DTO.PersonRecord;
-using server.Models.DTO.Room;
-using server.Models.DTO.RoomRecord;
+using server.Utils;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace server.Controllers;
 
@@ -14,6 +15,10 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
+    private readonly JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        ReferenceHandler = ReferenceHandler.Preserve
+    };
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PersonRecord>>> GetAllPersonRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
@@ -24,33 +29,15 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
             return NotFound();
         }
 
-        var response = new List<PersonRecordDto>();
-        foreach (var personRecord in personRecords)
+        var obj = _mapper.Map<List<PersonRecordDto>>(personRecords);
+
+        var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
+        var response = new
         {
-            response.Add(new PersonRecordDto
-            {
-                PersonRecordId = personRecord.PersonRecordId,
+            data = JsonSerializer.Serialize(obj, options),
+            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+        };
 
-                RoomId = personRecord.Room.RoomId,
-                RoomNumber = personRecord.Room.RoomNumber,
-                RoomType = personRecord.Room.RoomType,
-
-                PersonId = personRecord.Person.PersonId,
-                StudentID = personRecord.Person.StudentID,
-                Name = personRecord.Person.Name,
-                StudyGroup = personRecord.Person.StudyGroup,
-                Role = personRecord.Person.Role,
-                Email = personRecord.Person.Email,
-
-                Saturation = personRecord.Saturation,
-                HeartRate = personRecord.HeartRate,
-                Temperature = personRecord.Temperature,
-                IsCriticalResults = personRecord.IsCriticalResults,
-                RecordedDate = personRecord.RecordedDate,
-            });
-        }
-
-        //var response = _mapper.Map<List<PersonRecordDto>>(personRecords);
         return Ok(response);
     }
 
@@ -63,33 +50,15 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
             return NotFound();
         }
 
-        var response = new List<PersonRecordDto>();
-        foreach (var personRecord in personRecords)
+        var obj = _mapper.Map<List<PersonRecordDto>>(personRecords);
+
+        var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
+        var response = new
         {
-            response.Add(new PersonRecordDto
-            {
-                PersonRecordId = personRecord.PersonRecordId,
+            data = JsonSerializer.Serialize(obj, options),
+            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+        };
 
-                RoomId = personRecord.Room.RoomId,
-                RoomNumber = personRecord.Room.RoomNumber,
-                RoomType = personRecord.Room.RoomType,
-
-                PersonId = personRecord.Person.PersonId,
-                StudentID = personRecord.Person.StudentID,
-                Name = personRecord.Person.Name,
-                StudyGroup = personRecord.Person.StudyGroup,
-                Role = personRecord.Person.Role,
-                Email = personRecord.Person.Email,
-
-                Saturation = personRecord.Saturation,
-                HeartRate = personRecord.HeartRate,
-                Temperature = personRecord.Temperature,
-                IsCriticalResults = personRecord.IsCriticalResults,
-                RecordedDate = personRecord.RecordedDate,
-            });
-        }
-
-        //var response = _mapper.Map<List<PersonRecordDto>>(personRecords);
         return Ok(response);
     }
 
@@ -102,31 +71,13 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         {
             return NotFound();
         }
-        var response = new List<PersonRecordDto>();
-        foreach (var personRecord in personRecords)
+       
+        var obj = _mapper.Map<List<PersonRecordDto>>(personRecords);
+
+        var response = new
         {
-            response.Add(new PersonRecordDto
-            {
-                PersonRecordId = personRecord.PersonRecordId,
-
-                RoomId = personRecord.Room.RoomId,
-                RoomNumber = personRecord.Room.RoomNumber,
-                RoomType = personRecord.Room.RoomType,
-
-                PersonId = personRecord.Person.PersonId,
-                StudentID = personRecord.Person.StudentID,
-                Name = personRecord.Person.Name,
-                StudyGroup = personRecord.Person.StudyGroup,
-                Role = personRecord.Person.Role,
-                Email = personRecord.Person.Email,
-
-                Saturation = personRecord.Saturation,
-                HeartRate = personRecord.HeartRate,
-                Temperature = personRecord.Temperature,
-                IsCriticalResults = personRecord.IsCriticalResults,
-                RecordedDate = personRecord.RecordedDate,
-            });
-        }
+            data = JsonSerializer.Serialize(obj, options),
+        };
         return Ok(response);
     }
 
@@ -134,49 +85,24 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
     [HttpPost]
     public async Task<IActionResult> CreatePersonRecord([FromBody] CreatePersonRecordRequestDto request)
     {
-        var utcTime = DateTime.UtcNow;
-
-        var personRecord = new PersonRecord
-        {
-            PersonId = request.PersonId,
-            RoomId = request.RoomId,
-            Saturation = request.Saturation,
-            HeartRate = request.HeartRate,
-            Temperature = request.Temperature,
-            IsCriticalResults = request.IsCriticalResults,
-            RecordedDate = utcTime,
-        };
-        await _unitOfWork.PersonRecord.Add(personRecord);
-        await _unitOfWork.SaveAsync();
-
         var existingObject = await _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == request.PersonId);
         var existingObject2 = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomId == request.RoomId);
 
-        if (existingObject is null)
+        if (existingObject is null || existingObject2 is null)
         {
             return NotFound();
         }
 
-        var response = new PersonRecordDto
+        var personRecord = _mapper.Map<PersonRecord>(request);
+
+        await _unitOfWork.PersonRecord.Add(personRecord);
+        await _unitOfWork.SaveAsync();
+
+        var obj = _mapper.Map<PersonRecordDto>(personRecord);
+
+        var response = new
         {
-            PersonRecordId = personRecord.PersonRecordId,
-
-            RoomId = existingObject2.RoomId,
-            RoomNumber = existingObject2.RoomNumber,
-            RoomType = existingObject2.RoomType,
-
-            PersonId = existingObject.PersonId,
-            StudentID = existingObject.StudentID,
-            Name = existingObject.Name,
-            StudyGroup = existingObject.StudyGroup,
-            Role = existingObject.Role,
-            Email = existingObject.Email,
-
-            Saturation = personRecord.Saturation,
-            HeartRate = personRecord.HeartRate,
-            Temperature = personRecord.Temperature,
-            IsCriticalResults = personRecord.IsCriticalResults,
-            RecordedDate = personRecord.RecordedDate,
+            data = JsonSerializer.Serialize(obj, options),
         };
 
         return Ok(response);

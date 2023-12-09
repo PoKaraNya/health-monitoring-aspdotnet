@@ -50,7 +50,7 @@ namespace server.Migrations
 
                     b.HasKey("PersonId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
                 });
 
             modelBuilder.Entity("server.Models.PersonRecord", b =>
@@ -88,7 +88,7 @@ namespace server.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("PersonRecords");
+                    b.ToTable("PersonRecords", (string)null);
                 });
 
             modelBuilder.Entity("server.Models.Room", b =>
@@ -109,7 +109,7 @@ namespace server.Migrations
 
                     b.HasKey("RoomId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("server.Models.RoomRecord", b =>
@@ -151,7 +151,7 @@ namespace server.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomRecords");
+                    b.ToTable("RoomRecords", (string)null);
                 });
 
             modelBuilder.Entity("server.Models.PersonRecord", b =>

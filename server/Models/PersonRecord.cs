@@ -8,16 +8,19 @@ public class PersonRecord
     [Key]
     [Display(Name = "Person record ID")]
     public int PersonRecordId { get; set; }
+
   
     [ForeignKey("Person")]
     [Display(Name = "Person ID")]
     public int PersonId { get; set; }
     public virtual Person Person { get; set; }
 
+
     [ForeignKey("Room")]
     [Display(Name = "Room ID")]
     public int RoomId { get; set; }
     public virtual Room Room { get; set; }
+
 
     [Required]
     public double Saturation { get; set; }

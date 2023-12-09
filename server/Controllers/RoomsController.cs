@@ -1,32 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using server.Models;
 using server.Models.DTO.Room;
 using server.Repository.IRepository;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using server.Models.DTO.Person;
+using server.Models.DTO.RoomRecord;
 
 namespace server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RoomsController(IUnitOfWork unitOfWork) : ControllerBase
+public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IMapper _mapper = mapper;
+    private readonly JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        ReferenceHandler = ReferenceHandler.Preserve
+    };
 
     [HttpGet]
     public async Task<IActionResult> GetAllRooms()
     {
         var rooms = await _unitOfWork.Room.GetAllAsync();
-        var response = new List<RoomDto>();
-
-        foreach (var room in rooms)
+        //var rooms = await _unitOfWork.Room.GetAll();
+        var obj = _mapper.Map<List<RoomDto>>(rooms);
+        //var totalCount = await _unitOfWork.Persons.GetCountAsync();
+        var response = new
         {
-            response.Add(new RoomDto
-            {
-                RoomId = room.RoomId,
-                RoomNumber = room.RoomNumber,
-                RoomType = room.RoomType,
-            });
-        }
-
+            data = JsonSerializer.Serialize(obj, options),
+            //maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+        };
         return Ok(response);
     }
 
@@ -39,13 +45,12 @@ public class RoomsController(IUnitOfWork unitOfWork) : ControllerBase
             return NotFound();
         }
 
-        var response = new RoomDto
-        {
-            RoomId = existingObject.RoomId,
-            RoomNumber = existingObject.RoomNumber,
-            RoomType = existingObject.RoomType,
-        };
+        var obj = _mapper.Map<RoomDto>(existingObject);
 
+        var response = new
+        {
+            data = JsonSerializer.Serialize(obj, options)
+        };
         return Ok(response);
     }
 
@@ -58,28 +63,27 @@ public class RoomsController(IUnitOfWork unitOfWork) : ControllerBase
             RoomType = request.RoomType,
         };
         await _unitOfWork.Room.Add(room);
-        await _unitOfWork.Room.Add(room);
         await _unitOfWork.SaveAsync();
 
-        var response = new RoomDto
-        {
-            RoomId = room.RoomId,
-            RoomNumber = room.RoomNumber,
-            RoomType = room.RoomType,
-        };
+        var obj = _mapper.Map<RoomDto>(room);
 
+        var response = new
+        {
+            data = JsonSerializer.Serialize(obj, options)
+        };
         return Ok(response);
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateRoom([FromRoute] int id, UpdateRoomRequestDto request)
     {
-        var room = new Room
-        {
-            RoomId = id,
-            RoomNumber = request.RoomNumber,
-            RoomType = request.RoomType,
-        };
+        var room = _mapper.Map<Room>(request);
+        //var room = new Room
+        //{
+        //    RoomId = id,
+        //    RoomNumber = request.RoomNumber,
+        //    RoomType = request.RoomType,
+        //};
 
         room = await _unitOfWork.Room.UpdateAsync(room, x => x.RoomId == id);
 
@@ -88,13 +92,18 @@ public class RoomsController(IUnitOfWork unitOfWork) : ControllerBase
             return NotFound();
         }
 
-        var response = new RoomDto
-        {
-            RoomId = room.RoomId,
-            RoomNumber = room.RoomNumber,
-            RoomType = room.RoomType,
-        };
+        var obj = _mapper.Map<RoomDto>(room);
+        //var response = new RoomDto
+        //{
+        //    RoomId = room.RoomId,
+        //    RoomNumber = room.RoomNumber,
+        //    RoomType = room.RoomType,
+        //};
 
+        var response = new
+        {
+            data = JsonSerializer.Serialize(obj, options),
+        };
         return Ok(response);
     }
 
@@ -107,13 +116,18 @@ public class RoomsController(IUnitOfWork unitOfWork) : ControllerBase
             return NotFound();
         }
 
-        var response = new RoomDto
-        {
-            RoomId = room.RoomId,
-            RoomNumber = room.RoomNumber,
-            RoomType = room.RoomType,
-        };
+        var obj = _mapper.Map<RoomDto>(room);
+        //var obj = new RoomDto
+        //{
+        //    RoomId = room.RoomId,
+        //    RoomNumber = room.RoomNumber,
+        //    RoomType = room.RoomType,
+        //};
 
+        var response = new
+        {
+            data = JsonSerializer.Serialize(obj, options),
+        };
         return Ok(response);
     }
 }

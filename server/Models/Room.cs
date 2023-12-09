@@ -17,5 +17,5 @@ public class Room
     public string RoomType { get; set; }
 
     public virtual ICollection<RoomRecord> RoomRecords { get; set; }
-    public virtual ICollection<PersonRecord> PersonRecord { get; set; }
+    public virtual ICollection<PersonRecord> PersonRecords { get; set; }
 }

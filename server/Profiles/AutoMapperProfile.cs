@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using server.Models.DTO.Person;
 using server.Models;
+using server.Models.DTO.Person;
+using server.Models.DTO.Room;
 using server.Models.DTO.RoomRecord;
 using server.Models.DTO.PersonRecord;
 
@@ -14,12 +15,26 @@ public class AutoMapperProfile : Profile
         CreateMap<UpdatePersonRequestDto, Person>();
         CreateMap<Person, PersonDto>();
 
-        CreateMap<RoomRecord, RoomRecordDto>();
-        CreateMap<CreateRoomRecordRequestDto, RoomRecord>();
+        CreateMap<CreateRoomRequestDto, Room>();
+        CreateMap<UpdateRoomRequestDto, Room>();
+        CreateMap<Room, RoomDto>();
+
+        //CreateMap<RoomRecord, RoomRecordDto>()
+        //    .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room));
+
+        CreateMap<RoomRecord, RoomRecordDto> ()
+           .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room));
+        CreateMap<PersonRecord, PersonRecordDto>()
+          .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room))
+          .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.Person));
+
+        CreateMap<CreateRoomRecordRequestDto, RoomRecord>()
+             .ForMember(dest => dest.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
         //CreateMap<UpdateRoomRecordRequestDto, RoomRecord>();
 
         CreateMap<PersonRecord, PersonRecordDto>();
-        CreateMap<CreatePersonRecordRequestDto, PersonRecord>();
+        CreateMap<CreatePersonRecordRequestDto, PersonRecord>()
+             .ForMember(dest => dest.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
         //CreateMap<UpdatePersonRecordRequestDto, PersonRecord>();
     }
 }

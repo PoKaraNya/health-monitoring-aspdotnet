@@ -30,6 +30,19 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
         return rr => true; // take all fields
     }
 
+    public async Task<IEnumerable<PersonRecord>> GetAllAsync(int pageNumber, bool isOutputOnlyCritical, int? id = null)
+    {
+        var take = Constants.MaxItemsPerPage;
+        var skip = (pageNumber - 1) * take;
+        var where = GetExpression(id, isOutputOnlyCritical);
+        return await _db.PersonRecords
+               .Where(where)
+               .Skip(skip)
+               .Take(take)
+               .OrderByDescending(x => x)
+               .ToListAsync();
+    }
+
     public async Task<IEnumerable<PersonRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical, int? id = null)
     {
         var take = Constants.MaxItemsPerPage;
@@ -41,7 +54,16 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
                .Where(where)
                .Skip(skip)
                .Take(take)
+               .OrderByDescending(x => x)
                .ToListAsync();
+    }
+
+    public async Task<int> GetCountAsync(bool isOutputOnlyCritical, int? id = null)
+    {
+        var where = GetExpression(id, isOutputOnlyCritical);
+        return await _db.PersonRecords
+               .Where(where)
+               .CountAsync();
     }
 
     public async Task<IEnumerable<PersonRecord>> GetAllPersonRecordDashboard(int? day, int? month, int year, int? id)

@@ -2,6 +2,7 @@
 using server.Models;
 using server.Repository.IRepository;
 using server.Utils;
+using System.Linq;
 using System.Linq.Expressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -35,6 +36,20 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
         return rr => true; // take all fields
     }
 
+    public async Task<IEnumerable<RoomRecord>> GetAllAsync(int pageNumber, bool isOutputOnlyCritical, int? id)
+    {
+        var take = Constants.MaxItemsPerPage;
+        var skip = (pageNumber - 1) * take;
+        var where = GetExpression(id, isOutputOnlyCritical);
+
+        return await _db.RoomRecords
+               .Where(where)
+               .Skip(skip)
+               .Take(take)
+               .OrderByDescending(x => x)
+               .ToListAsync();
+    }
+
     public async Task<IEnumerable<RoomRecord>> GetAllWithRelationsAsync(int pageNumber, bool isOutputOnlyCritical, int? id)
     {
         var take = Constants.MaxItemsPerPage;
@@ -46,12 +61,23 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
                .Where(where)
                .Skip(skip)
                .Take(take)
+               .OrderByDescending(x => x)
                .ToListAsync();
+    }
+
+    public async Task<int> GetCountAsync(bool isOutputOnlyCritical, int? id = null)
+    {
+        var where = GetExpression(id, isOutputOnlyCritical);
+        return await _db.RoomRecords
+               .Where(where)
+               .CountAsync();
     }
 
     public async Task<IEnumerable<RoomRecord>> GetAllRoomRecordDashboard(int? day, int? month, int year, int? id)
     {
-        var roomRecords = _db.RoomRecords.Include(nameof(Room)).AsQueryable();
+        var roomRecords = _db.RoomRecords
+            .Include(nameof(Room))
+            .AsQueryable();
 
         Expression<Func<RoomRecord, bool>> dateCondition = record =>
            (!day.HasValue || record.RecordedDate.Day == day.Value) &&
