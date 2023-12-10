@@ -15,11 +15,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
-
+   
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PersonRecord>>> GetAllPersonRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
     {
@@ -34,7 +30,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
             maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
 
@@ -55,7 +51,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
             maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
 
@@ -76,7 +72,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }
@@ -102,7 +98,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
 
         return Ok(response);

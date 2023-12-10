@@ -6,6 +6,7 @@ using AutoMapper;
 using System.Text.Json;
 using server.Utils;
 using System.Text.Json.Serialization;
+using server.Models.DTO.PersonRecord;
 
 namespace server.Controllers;
 
@@ -15,11 +16,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
-
+  
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RoomRecord>>> GetAllRoomRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
     {
@@ -34,11 +31,12 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
             maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
 
         return Ok(response);
+        //return new JsonResult(response, options);
     }
 
 
@@ -58,7 +56,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         var totalCount = await _unitOfWork.RoomRecord.GetCountAsync(isOutputOnlyCritical);
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
             maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
 
@@ -79,7 +77,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
 
         return Ok(response);
@@ -104,7 +102,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }

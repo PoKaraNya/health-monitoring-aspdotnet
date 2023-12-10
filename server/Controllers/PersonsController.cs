@@ -16,21 +16,17 @@ public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : Control
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
 
     [HttpGet]
     public async Task<IActionResult> GetAllPersons([FromQuery] int pageNumber = 1)
     {
         var persons = await _unitOfWork.Person.GetAllAsync();
         var obj = _mapper.Map<List<PersonDto>>(persons);
-        //var totalCount = await _unitOfWork.Persons.GetCountAsync();
+        var totalCount = await _unitOfWork.Person.GetCountAsync();
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
-            //maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+            data = obj,
+            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
         return Ok(response);
     }
@@ -45,9 +41,11 @@ public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : Control
         }
 
         var obj = _mapper.Map<PersonDto>(existingObject);
+        var totalCount = await _unitOfWork.Person.GetCountAsync(id);
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options)
+            data = obj,
+            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
         return Ok(response);
     }
@@ -62,7 +60,7 @@ public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : Control
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }
@@ -82,7 +80,7 @@ public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : Control
         
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }
@@ -99,7 +97,7 @@ public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : Control
         
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }

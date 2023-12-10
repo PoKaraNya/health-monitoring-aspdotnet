@@ -16,5 +16,5 @@ public class PersonDto
     public string Role { get; set; }
     public string Email { get; set; }
 
-    public ICollection<PersonRecordDto> PersonRecords { get; set; }
+    //public ICollection<PersonRecordDto> PersonRecords { get; set; }
 }

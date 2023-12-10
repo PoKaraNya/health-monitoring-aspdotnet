@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using server.Models.DTO.Person;
 using server.Models.DTO.RoomRecord;
+using Microsoft.Extensions.Options;
 
 namespace server.Controllers;
 
@@ -16,10 +17,7 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };
+  
 
     [HttpGet]
     public async Task<IActionResult> GetAllRooms()
@@ -30,16 +28,17 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
         //var totalCount = await _unitOfWork.Persons.GetCountAsync();
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
             //maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
         };
         return Ok(response);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetRoomById([FromRoute] int id)
-    {      
+    public async Task<IActionResult> GetRoomById([FromRoute] int? id, [FromQuery] string? roomNumber)
+    {
         var existingObject = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomId == id);
+
         if (existingObject is null)
         {
             return NotFound();
@@ -49,7 +48,7 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options)
+            data = obj,
         };
         return Ok(response);
     }
@@ -69,7 +68,7 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options)
+            data = obj,
         };
         return Ok(response);
     }
@@ -102,7 +101,7 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }
@@ -126,7 +125,7 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
 
         var response = new
         {
-            data = JsonSerializer.Serialize(obj, options),
+            data = obj,
         };
         return Ok(response);
     }
