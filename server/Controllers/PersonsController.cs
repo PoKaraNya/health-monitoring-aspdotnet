@@ -3,13 +3,13 @@ using server.Models;
 using server.Models.DTO.Person;
 using server.Repository.IRepository;
 using AutoMapper;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using server.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class PersonsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase 

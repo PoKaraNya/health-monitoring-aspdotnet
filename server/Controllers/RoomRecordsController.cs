@@ -3,13 +3,12 @@ using server.Repository.IRepository;
 using server.Models.DTO.RoomRecord;
 using server.Models;
 using AutoMapper;
-using System.Text.Json;
 using server.Utils;
-using System.Text.Json.Serialization;
-using server.Models.DTO.PersonRecord;
+using Microsoft.AspNetCore.Authorization;
 
 namespace server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase

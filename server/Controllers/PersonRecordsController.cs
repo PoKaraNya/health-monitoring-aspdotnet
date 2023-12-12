@@ -1,21 +1,22 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using server.Models;
 using server.Repository.IRepository;
 using server.Models.DTO.PersonRecord;
 using server.Utils;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
+using server.Authentication;
 
 namespace server.Controllers;
-
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-   
+
+    //[Authorize(Roles = UserRoles.Admin)]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PersonRecord>>> GetAllPersonRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
     {
