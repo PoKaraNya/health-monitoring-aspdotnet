@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualBasic;
 
 namespace server.Models.DTO.RoomRecord;
 
-public class CreateRoomRecordRequestDto
+public class CreateRoomRecordByDeviceRequestDto
 {
     [ForeignKey("Room")]
-    public int RoomId { get; set; }
+    public string RoomNumber { get; set; }
     [Required]
     public double Humidity { get; set; }
     [Required]

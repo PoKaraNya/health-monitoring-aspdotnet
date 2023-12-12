@@ -82,6 +82,31 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         return Ok(response);
     }
 
+    [HttpPost("device")]
+    public async Task<IActionResult> CreateRoomRecordByRoomNumber([FromBody] CreateRoomRecordByDeviceRequestDto request)
+    {
+        var existingObject = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
+
+        if (existingObject is null)
+        {
+            return NotFound();
+        } 
+
+        var roomRecord = _mapper.Map<RoomRecord>(request);
+        roomRecord.RoomId = existingObject.RoomId;
+
+        await _unitOfWork.RoomRecord.Add(roomRecord);
+        await _unitOfWork.SaveAsync();
+
+        var obj = _mapper.Map<RoomRecordDto>(roomRecord);
+
+        var response = new
+        {
+            data = obj,
+        };
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateRoomRecord([FromBody] CreateRoomRecordRequestDto request)
     {
