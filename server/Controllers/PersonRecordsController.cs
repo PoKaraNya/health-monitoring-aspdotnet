@@ -6,6 +6,7 @@ using server.Models.DTO.PersonRecord;
 using server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using server.Authentication;
+using server.Models.DTO.RoomRecord;
 
 namespace server.Controllers;
 [Authorize]
@@ -70,6 +71,33 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         }
        
         var obj = _mapper.Map<List<PersonRecordDto>>(personRecords);
+
+        var response = new
+        {
+            data = obj,
+        };
+        return Ok(response);
+    }
+
+    [HttpPost("device")]
+    public async Task<IActionResult> CreatePersonRecordByDevice([FromBody] CreatePersonRecordByDeviceRequestDto request)
+    {
+        var existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
+        var existingPerson = await _unitOfWork.Person.GetFirstOrDefault(x => x.StudentID == request.StudentID);
+
+        if (existingRoom is null || existingPerson is null)
+        {
+            return NotFound();
+        }
+
+        var personRecord = _mapper.Map<PersonRecord>(request);
+        personRecord.RoomId = existingRoom.RoomId;
+        personRecord.PersonId = existingPerson.PersonId;
+
+        await _unitOfWork.PersonRecord.Add(personRecord);
+        await _unitOfWork.SaveAsync();
+
+        var obj = _mapper.Map<PersonRecordDto>(personRecord);
 
         var response = new
         {

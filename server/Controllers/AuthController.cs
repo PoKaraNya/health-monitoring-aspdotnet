@@ -13,13 +13,13 @@ namespace server.Controllers;
 [ApiController]
 //[Route("[controller]")]
 [Route("[controller]")]
-public class AuthenticateController : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> userManager;
     private readonly RoleManager<IdentityRole> roleManager;
     private readonly IConfiguration _configuration;
 
-    public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
     {
         this.userManager = userManager;
         this.roleManager = roleManager;

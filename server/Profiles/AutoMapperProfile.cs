@@ -11,33 +11,39 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        CreateMap<Person, PersonDto>();
         CreateMap<CreatePersonRequestDto, Person>();
         CreateMap<UpdatePersonRequestDto, Person>();
-        CreateMap<Person, PersonDto>();
 
-  
+
+        CreateMap<PersonRecord, PersonRecordDto>()
+          .ForMember(_ => _.Room, opt => opt.MapFrom(src => src.Room))
+          .ForMember(_ => _.Person, opt => opt.MapFrom(src => src.Person));
+
+        CreateMap<CreatePersonRecordRequestDto, PersonRecord>()
+           .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+        CreateMap<CreatePersonRecordByDeviceRequestDto, PersonRecord>()
+            .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+        //CreateMap<UpdatePersonRecordRequestDto, PersonRecord>();
+
+
+        CreateMap<Room, RoomDto>();
         CreateMap<CreateRoomRequestDto, Room>();
         CreateMap<UpdateRoomRequestDto, Room>();
-        CreateMap<Room, RoomDto>();
 
-        //CreateMap<RoomRecord, RoomRecordDto>()
-        //    .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room));
 
-        CreateMap<RoomRecord, RoomRecordDto> ()
-           .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room));
-        CreateMap<PersonRecord, PersonRecordDto>()
-          .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room))
-          .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.Person));
+        CreateMap<RoomRecord, RoomRecordDto>()
+          .ForMember(_ => _.Room, opt => opt.MapFrom(src => src.Room));
 
         CreateMap<CreateRoomRecordRequestDto, RoomRecord>()
-             .ForMember(dest => dest.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+           .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
         CreateMap<CreateRoomRecordByDeviceRequestDto, RoomRecord>()
-          .ForMember(dest => dest.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+          .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
         //CreateMap<UpdateRoomRecordRequestDto, RoomRecord>();
 
-        CreateMap<PersonRecord, PersonRecordDto>();
-        CreateMap<CreatePersonRecordRequestDto, PersonRecord>()
-             .ForMember(dest => dest.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
-        //CreateMap<UpdatePersonRecordRequestDto, PersonRecord>();
+
+        //CreateMap<PersonRecord, PersonRecordDto>(); // ?
     }
 }

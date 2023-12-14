@@ -83,7 +83,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
     }
 
     [HttpPost("device")]
-    public async Task<IActionResult> CreateRoomRecordByRoomNumber([FromBody] CreateRoomRecordByDeviceRequestDto request)
+    public async Task<IActionResult> CreateRoomRecordByDevice([FromBody] CreateRoomRecordByDeviceRequestDto request)
     {
         var existingObject = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
 
