@@ -44,9 +44,9 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
 
         return await _db.RoomRecords
                .Where(where)
+               .OrderByDescending(x => x)
                .Skip(skip)
                .Take(take)
-               .OrderByDescending(x => x)
                .ToListAsync();
     }
 
@@ -59,9 +59,9 @@ public class RoomRecordRepository : Repository<RoomRecord>, IRoomRecordRepositor
         return await _db.RoomRecords
                .Include(nameof(Room))
                .Where(where)
+               .OrderByDescending(x => x)
                .Skip(skip)
                .Take(take)
-               .OrderByDescending(x => x)
                .ToListAsync();
     }
 

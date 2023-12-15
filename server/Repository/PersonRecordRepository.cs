@@ -37,9 +37,9 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
         var where = GetExpression(id, isOutputOnlyCritical);
         return await _db.PersonRecords
                .Where(where)
+               .OrderByDescending(x => x)
                .Skip(skip)
                .Take(take)
-               .OrderByDescending(x => x)
                .ToListAsync();
     }
 
@@ -52,9 +52,9 @@ public class PersonRecordRepository(ApplicationDbContext db) : Repository<Person
                .Include(nameof(Person))
                .Include(nameof(Room))
                .Where(where)
+               .OrderByDescending(x => x)
                .Skip(skip)
                .Take(take)
-               .OrderByDescending(x => x)
                .ToListAsync();
     }
 

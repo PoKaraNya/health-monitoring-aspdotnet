@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using server.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace server.Models.DTO.PersonRecord
 {
-    public class CreatePersonRecordByDeviceRequestDto
+    public class CreatePersonRecordByDeviceRequestDto : IPersonRecordRequest
     {
         public int PersonRecordId { get; set; }
 
@@ -15,7 +16,7 @@ namespace server.Models.DTO.PersonRecord
         public double HeartRate { get; set; }
         [Required]
         public double Temperature { get; set; }
-        public bool IsCriticalResults { get; set; }
+        //public bool IsCriticalResults { get; set; }
         public DateTime RecordedDate { get; set; }
     }
 }

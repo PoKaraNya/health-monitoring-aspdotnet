@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualBasic;
+using server.Services;
 
 namespace server.Models.DTO.RoomRecord;
 
-public class CreateRoomRecordByDeviceRequestDto
+public class CreateRoomRecordByDeviceRequestDto : IRoomRecordRequest
 {
     [ForeignKey("Room")]
     public string RoomNumber { get; set; }
@@ -20,6 +21,6 @@ public class CreateRoomRecordByDeviceRequestDto
     public double AirIons { get; set; }
     [Required]
     public double Ozone { get; set; }
-    public bool IsCriticalResults { get; set; }
+    //public bool IsCriticalResults { get; set; }
     //public DateTime RecordedDate { get; set; }
 }

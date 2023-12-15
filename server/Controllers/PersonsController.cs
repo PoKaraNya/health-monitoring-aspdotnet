@@ -6,7 +6,6 @@ using AutoMapper;
 using server.Utils;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace server.Controllers;
 
 [Authorize]

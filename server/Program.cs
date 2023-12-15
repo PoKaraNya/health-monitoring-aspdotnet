@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using server.Authentication;
+using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -21,6 +22,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("HealthMonitoringDB")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IRoomRecordService, RoomRecordService>();
+builder.Services.AddScoped<IPersonRecordService, PersonRecordService>();
 
 builder.Services.AddCors(options =>
 {

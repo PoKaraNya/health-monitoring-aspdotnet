@@ -5,16 +5,20 @@ using server.Models;
 using AutoMapper;
 using server.Utils;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Policy;
+using Microsoft.VisualBasic;
+using server.Services;
 
 namespace server.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IRoomRecordService roomRecordService) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
+    private readonly IRoomRecordService _roomRecordService = roomRecordService;
   
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RoomRecord>>> GetAllRoomRecords([FromQuery] int pageNumber = 1, bool isOutputOnlyCritical = false)
@@ -31,7 +35,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         var response = new
         {
             data = obj,
-            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+            maxPage = Math.Ceiling((double)totalCount / Utils.Constants.MaxItemsPerPage)
         };
 
         return Ok(response);
@@ -56,7 +60,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         var response = new
         {
             data = obj,
-            maxPage = Math.Ceiling((double)totalCount / Constants.MaxItemsPerPage)
+            maxPage = Math.Ceiling((double)totalCount / Utils.Constants.MaxItemsPerPage)
         };
 
         return Ok(response);
@@ -94,6 +98,7 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
 
         var roomRecord = _mapper.Map<RoomRecord>(request);
         roomRecord.RoomId = existingObject.RoomId;
+        roomRecord.IsCriticalResults = _roomRecordService.IsCriticalResults(request);
 
         await _unitOfWork.RoomRecord.Add(roomRecord);
         await _unitOfWork.SaveAsync();
@@ -118,7 +123,8 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : Con
         }
 
         var roomRecord = _mapper.Map<RoomRecord>(request);
-       
+        roomRecord.IsCriticalResults = _roomRecordService.IsCriticalResults(request);
+
         await _unitOfWork.RoomRecord.Add(roomRecord);
         await _unitOfWork.SaveAsync();
 

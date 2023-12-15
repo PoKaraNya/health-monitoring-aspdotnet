@@ -7,15 +7,17 @@ using server.Utils;
 using Microsoft.AspNetCore.Authorization;
 using server.Authentication;
 using server.Models.DTO.RoomRecord;
+using server.Services;
 
 namespace server.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IPersonRecordService personRecordService) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
+    private readonly IPersonRecordService _personRecordService = personRecordService;
 
     //[Authorize(Roles = UserRoles.Admin)]
     [HttpGet]
@@ -93,6 +95,7 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
         var personRecord = _mapper.Map<PersonRecord>(request);
         personRecord.RoomId = existingRoom.RoomId;
         personRecord.PersonId = existingPerson.PersonId;
+        personRecord.IsCriticalResults = _personRecordService.IsCriticalResults(request);
 
         await _unitOfWork.PersonRecord.Add(personRecord);
         await _unitOfWork.SaveAsync();
@@ -110,15 +113,16 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper) : C
     [HttpPost]
     public async Task<IActionResult> CreatePersonRecord([FromBody] CreatePersonRecordRequestDto request)
     {
-        var existingObject = await _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == request.PersonId);
-        var existingObject2 = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomId == request.RoomId);
+        var existingPerson = await _unitOfWork.Person.GetFirstOrDefault(x => x.PersonId == request.PersonId);
+        var existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomId == request.RoomId);
 
-        if (existingObject is null || existingObject2 is null)
+        if (existingPerson is null || existingRoom is null)
         {
             return NotFound();
         }
 
         var personRecord = _mapper.Map<PersonRecord>(request);
+        personRecord.IsCriticalResults = _personRecordService.IsCriticalResults(request);
 
         await _unitOfWork.PersonRecord.Add(personRecord);
         await _unitOfWork.SaveAsync();
