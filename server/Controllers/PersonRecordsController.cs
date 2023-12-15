@@ -86,10 +86,21 @@ public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IPe
     {
         var existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
         var existingPerson = await _unitOfWork.Person.GetFirstOrDefault(x => x.StudentID == request.StudentID);
-
-        if (existingRoom is null || existingPerson is null)
+        
+        if(existingPerson is null)
         {
-            return NotFound();
+            var person = _mapper.Map<Person>(request);
+            await _unitOfWork.Person.Add(person);
+            await _unitOfWork.SaveAsync();
+            existingPerson = await _unitOfWork.Person.GetFirstOrDefault(x => x.StudentID == request.StudentID);
+        }
+
+        if (existingRoom is null)
+        {
+            var room = _mapper.Map<Room>(request);
+            await _unitOfWork.Room.Add(room);
+            await _unitOfWork.SaveAsync();
+            existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
         }
 
         var personRecord = _mapper.Map<PersonRecord>(request);

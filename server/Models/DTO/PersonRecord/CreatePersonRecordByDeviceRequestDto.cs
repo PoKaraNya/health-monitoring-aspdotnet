@@ -7,8 +7,14 @@ namespace server.Models.DTO.PersonRecord
     {
         public int PersonRecordId { get; set; }
 
-        public int StudentID { get; set; }
+        public int? StudentID { get; set; }
+        public string Name { get; set; }
+        public string? StudyGroup { get; set; }
+        public string Role { get; set; }
+        public string Email { get; set; }
+
         public string RoomNumber { get; set; }
+        public string RoomType { get; set; }
 
         [Required]
         public double Saturation { get; set; }

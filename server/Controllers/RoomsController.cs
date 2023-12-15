@@ -53,11 +53,12 @@ public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : Controlle
     [HttpPost]
     public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequestDto request)
     {
-        var room = new Room
-        {
-            RoomNumber = request.RoomNumber,
-            RoomType = request.RoomType,
-        };
+        var room = _mapper.Map<Room>(request);
+        //var room = new Room
+        //{
+        //    RoomNumber = request.RoomNumber,
+        //    RoomType = request.RoomType,
+        //};
         await _unitOfWork.Room.Add(room);
         await _unitOfWork.SaveAsync();
 

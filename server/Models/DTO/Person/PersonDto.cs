@@ -1,6 +1,4 @@
-﻿using server.Models.DTO.PersonRecord;
-using server.Models.DTO.RoomRecord;
-using server.Models.Validations;
+﻿using server.Models.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace server.Models.DTO.Person;

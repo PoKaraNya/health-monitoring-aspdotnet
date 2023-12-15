@@ -25,6 +25,10 @@ public class AutoMapperProfile : Profile
 
         CreateMap<CreatePersonRecordByDeviceRequestDto, PersonRecord>()
             .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+        CreateMap<CreatePersonRecordByDeviceRequestDto, Person>();
+        CreateMap<CreatePersonRecordByDeviceRequestDto, Room>();
+
         //CreateMap<UpdatePersonRecordRequestDto, PersonRecord>();
 
 
@@ -41,6 +45,10 @@ public class AutoMapperProfile : Profile
 
         CreateMap<CreateRoomRecordByDeviceRequestDto, RoomRecord>()
           .ForMember(_ => _.RecordedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+        CreateMap<CreateRoomRecordByDeviceRequestDto, Room>();
+        
+
         //CreateMap<UpdateRoomRecordRequestDto, RoomRecord>();
 
 

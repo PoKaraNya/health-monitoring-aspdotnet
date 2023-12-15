@@ -89,15 +89,18 @@ public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IRoom
     [HttpPost("device")]
     public async Task<IActionResult> CreateRoomRecordByDevice([FromBody] CreateRoomRecordByDeviceRequestDto request)
     {
-        var existingObject = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
+        var existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
 
-        if (existingObject is null)
+        if (existingRoom is null)
         {
-            return NotFound();
-        } 
+            var room = _mapper.Map<Room>(request);
+            await _unitOfWork.Room.Add(room);
+            await _unitOfWork.SaveAsync();
+            existingRoom = await _unitOfWork.Room.GetFirstOrDefault(x => x.RoomNumber == request.RoomNumber);
+        }
 
         var roomRecord = _mapper.Map<RoomRecord>(request);
-        roomRecord.RoomId = existingObject.RoomId;
+        roomRecord.RoomId = existingRoom.RoomId;
         roomRecord.IsCriticalResults = _roomRecordService.IsCriticalResults(request);
 
         await _unitOfWork.RoomRecord.Add(roomRecord);
