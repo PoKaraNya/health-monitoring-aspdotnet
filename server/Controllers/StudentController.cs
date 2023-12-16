@@ -31,6 +31,10 @@ public class StudentController(IUnitOfWork unitOfWork, IMapper mapper) : Control
     {
         var email = request.Email;
         var user = await _unitOfWork.Person.GetFirstOrDefault(x => x.Email == email);
+        if(user is null)
+        {
+            return NotFound();
+        }
         var personId = user.PersonId;
         var personRecords = await _unitOfWork.PersonRecord.GetAllAsync(pageNumber, isOutputOnlyCritical, personId);
 
