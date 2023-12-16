@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.VisualBasic;
 using server.Services;
 
 namespace server.Models.DTO.RoomRecord;

@@ -5,8 +5,6 @@ using server.Repository.IRepository;
 using server.Models.DTO.PersonRecord;
 using server.Utils;
 using Microsoft.AspNetCore.Authorization;
-using server.Authentication;
-using server.Models.DTO.RoomRecord;
 using server.Services;
 
 namespace server.Controllers;

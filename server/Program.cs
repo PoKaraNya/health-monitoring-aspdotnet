@@ -3,16 +3,13 @@ using server;
 using server.Repository.IRepository;
 using server.Repository;
 using server.Profiles;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using server.Authentication;
 using server.Services;
+using FirebaseAdmin;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -57,12 +54,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"<PATH_TO_CREDENTIALS_FILE");
+//builder.Services.AddSingleton(FirebaseApp.Create());
+//builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();
+
 app.UseRouting();
 app.UseAuthentication();    // аутентификация
 app.UseAuthorization();     // авторизация
@@ -71,4 +73,14 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
+//app.UseSession();
+//app.Use(async (context, next) =>
+//{
+//    var token = context.Session.GetString("token");
+//    if (!string.IsNullOrEmpty(token))
+//    {
+//        context.Request.Headers.Add("Authorization", "Bearer " + token);
+//    }
+//    await next();
+//});
 app.Run();

@@ -1,8 +1,4 @@
-﻿using server.Models.DTO.PersonRecord;
-using server.Models.DTO.RoomRecord;
-using System.ComponentModel.DataAnnotations;
-
-namespace server.Models.DTO.Room;
+﻿namespace server.Models.DTO.Room;
 
 public class RoomDto
 {

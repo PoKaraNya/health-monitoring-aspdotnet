@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using server.Models;
+﻿using server.Models;
 using System.Linq.Expressions;
 
 namespace server.Repository.IRepository;

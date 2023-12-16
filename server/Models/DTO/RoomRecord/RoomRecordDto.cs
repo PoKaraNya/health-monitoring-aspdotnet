@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using server.Models.DTO.Room;
+﻿using server.Models.DTO.Room;
 
 namespace server.Models.DTO.RoomRecord
 {
