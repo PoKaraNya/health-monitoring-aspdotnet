@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using server.Services;
 
 namespace server.Controllers;
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class PersonRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IPersonRecordService personRecordService) : ControllerBase

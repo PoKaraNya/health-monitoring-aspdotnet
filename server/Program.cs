@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using server.Authentication;
 using server.Services;
 using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -34,25 +35,40 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>()
                .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.SaveToken = true;
+//    options.RequireHttpsMetadata = false;
+//    options.TokenValidationParameters = new TokenValidationParameters()
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidAudience = configuration["JWT:ValidAudience"],
+//        ValidIssuer = configuration["JWT:ValidIssuer"],
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+//    };
+//});
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = configuration["JWT:ValidAudience"],
-        ValidIssuer = configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
-    };
-});
+        options.Authority = "https://securetoken.google.com/YOUR_PROJECT_ID";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/YOUR_PROJECT_ID",
+            ValidateAudience = true,
+            ValidAudience = "healthmonitoring-676cb",
+            ValidateLifetime = true
+        };
+    });
 
 //Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"<PATH_TO_CREDENTIALS_FILE");
 //builder.Services.AddSingleton(FirebaseApp.Create());
@@ -83,4 +99,10 @@ app.UseEndpoints(endpoints =>
 //    }
 //    await next();
 //});
+
+FirebaseApp.Create(new AppOptions
+{
+    Credential = GoogleCredential.FromFile("Authentication\\firebaseAuth\\firebase-credentials.json")
+});
+
 app.Run();

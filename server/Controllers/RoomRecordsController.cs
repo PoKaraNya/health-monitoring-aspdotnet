@@ -8,7 +8,7 @@ using server.Services;
 
 namespace server.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class RoomRecordsController(IUnitOfWork unitOfWork, IMapper mapper, IRoomRecordService roomRecordService) : ControllerBase
