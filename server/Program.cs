@@ -81,13 +81,13 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();
 
-app.UseRouting();
-app.UseAuthentication();    // аутентификация
-app.UseAuthorization();     // авторизация
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
+//app.UseRouting();
+//app.UseAuthentication();    // аутентификация
+//app.UseAuthorization();     // авторизация
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllers();
+//});
 
 //app.UseSession();
 //app.Use(async (context, next) =>
@@ -100,9 +100,9 @@ app.UseEndpoints(endpoints =>
 //    await next();
 //});
 
-FirebaseApp.Create(new AppOptions
-{
-    Credential = GoogleCredential.FromFile("Authentication\\firebaseAuth\\firebase-credentials.json")
-});
+//FirebaseApp.Create(new AppOptions
+//{
+//    Credential = GoogleCredential.FromFile("Authentication\\firebaseAuth\\firebase-credentials.json")
+//});
 
 app.Run();

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace server.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class RoomsController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
